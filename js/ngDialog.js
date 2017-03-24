@@ -63,7 +63,8 @@
             ariaDescribedBySelector: null,
             bodyClassName: 'ngdialog-open',
             width: null,
-            height: null
+            height: null,
+            useHammer: true
         };
 
         this.setForceHtmlReload = function (_useIt) {
@@ -146,7 +147,7 @@
                             return;
                         }
 
-                        if (typeof $window.Hammer !== 'undefined') {
+                        if (privateMethods.isHammerActive(options)) {
                             var hammerTime = scope.hammerTime;
                             hammerTime.off('tap', closeByDocumentHandler);
                             hammerTime.destroy && hammerTime.destroy();
@@ -456,6 +457,14 @@
                             return '$stateChangeStart';
                         }
                         return '$locationChangeStart';
+                    },
+
+                    isHammerActive: function(options) {
+                        if (options.useHammer && options.useHammer === true && typeof $window.Hammer !== 'undefined') {
+                            return true;
+                        }
+                        
+                        return false;
                     }
                 };
 
@@ -693,7 +702,7 @@
                                 }
                             };
 
-                            if (typeof $window.Hammer !== 'undefined') {
+                            if (privateMethods.isHammerActive(options)) {
                                 var hammerTime = scope.hammerTime = $window.Hammer($dialog[0]);
                                 hammerTime.on('tap', closeByDocumentHandler);
                             } else {
